@@ -1,17 +1,7 @@
-/*
-  Stepper Motor Demonstration 4
-  Stepper-Demo4.ino
-  Demonstrates NEMA 17 Bipolar Stepper with A4988 Driver
-
-  DroneBot Workshop 2018
-  https://dronebotworkshop.com
-*/
-
-// Define Constants
-
-// Connections to A4988
+// Connections to A4988를 built-in driver version으로 수정
 const int dirPin = 2;  // Direction
 const int stepPin = 3; // Step
+const int enPin = 4; // Enable
 
 // Motor steps per rotation
 const int STEPS_PER_REV = 200;
@@ -21,11 +11,13 @@ void setup() {
   // Setup the pins as Outputs
   pinMode(stepPin,OUTPUT); 
   pinMode(dirPin,OUTPUT);
+  pinMode(enPin,OUTPUT);
 }
 void loop() {
   
   // Set motor direction clockwise
   digitalWrite(dirPin,HIGH); 
+  digitalW
   
   // Spin motor one rotation slowly
   for(int x = 0; x < STEPS_PER_REV; x++) {
