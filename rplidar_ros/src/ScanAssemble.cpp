@@ -102,7 +102,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     pcl::toROSMsg(assembledCloud, OutPutCloud);
     full_point_cloud_publisher_.publish(OutPutCloud);
     Control.data = direction;
-    motor_control_publisher_.publish(Control);
+    motor_control_publisher_.publish(Control); //Arduino가 Subscribe
 
     // Return to spin until next laser scan taken
     return;
