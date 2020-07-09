@@ -2,6 +2,7 @@
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
 
       DATE of last update : 8/11/2018
+      2020.07.09 360도 laser scanning version
 */
 
 #include <ros/ros.h>
@@ -22,8 +23,8 @@ using namespace Eigen;
 using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0;
-int direction = 0;
+int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
+//int direction = 0;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -42,19 +43,19 @@ class ScanAssembler {
 
         Subscriber scan_sub_;
         Publisher full_point_cloud_publisher_;
-        Publisher motor_control_publisher_;
+        //Publisher motor_control_publisher_;
 };
 
 ScanAssembler::ScanAssembler(){
     scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 100, &ScanAssembler::scanCallback, this);
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 100, false);
-    motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
+    //motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
 }
 
 void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Create control variable    
-    std_msgs::Int16 Control;
+    //std_msgs::Int16 Control;
 
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
@@ -90,7 +91,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         ScanNo += 1;
         if(ScanNo > 179){
             ScanNo = 0;
-            direction = (direction+1)%2;
+            //direction = (direction+1)%2;
         }
     } else {
         oldcloud = RotatedCloud;
@@ -101,8 +102,8 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
     full_point_cloud_publisher_.publish(OutPutCloud);
-    Control.data = direction;
-    motor_control_publisher_.publish(Control); //Arduino가 Subscribe
+    //Control.data = direction;
+    //motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
 
     // Return to spin until next laser scan taken
     return;
