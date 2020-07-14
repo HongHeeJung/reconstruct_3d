@@ -71,7 +71,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Create Affine transformation matrix for 0.0174533 radians around Z axis (approx 1 degree) of rotation with no translation.
     Affine3f RotateMatrix = Affine3f::Identity();
     RotateMatrix.translation() << 0.0, 0.0, 0.0;
-    // Rotate matrix has ofset of 90 degrees to set start pos
+    // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
         RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitY()));
     } else {
