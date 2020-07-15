@@ -19,12 +19,12 @@
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/impl/transforms.hpp>
 
-using namespace Eigen;
-using namespace ros;
+using namespace Eigen; //space transformation 
+using namespace ros; 
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
-int direction = 0;
+int direction = 0; //0: 아래에서 위 1: 위에서 아래
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -71,6 +71,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Create Affine transformation matrix for 0.0174533 radians around Z axis (approx 1 degree) of rotation with no translation.
     Affine3f RotateMatrix = Affine3f::Identity();
     RotateMatrix.translation() << 0.0, 0.0, 0.0;
+
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
         RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitY()));
@@ -91,7 +92,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         ScanNo += 1;
         if(ScanNo > 179){
             ScanNo = 0;
-            //direction = (direction+1)%2;
+            direction = (direction+1)%2;
         }
     } else {
         oldcloud = RotatedCloud;
