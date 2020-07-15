@@ -24,7 +24,7 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
-int direction = 0; //0: 아래에서 위 1: 위에서 아래
+int direction = 1; //1: 아래에서 위 ok 0: 위에서 아래 reverse
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
