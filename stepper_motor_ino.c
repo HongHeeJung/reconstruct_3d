@@ -9,7 +9,7 @@ const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속�
 const int enPin = 4; // Enable 1 or 연결x: WORK, 0 or GND: OFF 
 
 // Motor steps per rotation
-const int STEPS_PER_REV = 200;
+const int STEPS_PER_REV = 180;
 const int stepDelayMicros = 1000;
 
 void setup() {
@@ -18,12 +18,13 @@ void setup() {
   pinMode(stepPin,OUTPUT); 
   pinMode(dirPin,OUTPUT);
   pinMode(enPin,OUTPUT);
+  
+  digitalWrite(enPin,HIGH);
 }
 
 void loop() {
   
   digitalWrite(dirPin,HIGH); // Set motor direction clockwise
-  digitalWrite(enPin,HIGH);
   
   // Spin motor one rotation slowly
   for(int x = 0; x < STEPS_PER_REV; x++) {
@@ -40,7 +41,6 @@ void loop() {
     /*
   // Set motor direction counterclockwise
   digitalWrite(dirPin,LOW);
-  digitalWrite(enPin,HIGH);
 
   // Spin motor two rotations quickly
   for(int x = 0; x < (STEPS_PER_REV * 2); x++) {
