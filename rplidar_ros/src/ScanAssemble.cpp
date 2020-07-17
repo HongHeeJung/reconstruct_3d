@@ -3,6 +3,7 @@
 
       DATE of last update : 8/11/2018
       2020.07.09 360도 laser scanning version
+      
       const int STEPS_PER_REV = 360;
       const int stepDelayMicros = 8000;
       direction [0]
@@ -32,6 +33,7 @@ using namespace ros;
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0; //1: 아래에서 위 ok 0: 위에서 아래 reverse
+const float rad = 0.0174533;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -54,7 +56,9 @@ class ScanAssembler {
 };
 
 ScanAssembler::ScanAssembler(){
+    // Raw data of Lidar
     scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 100, &ScanAssembler::scanCallback, this);
+    // Point cloud for 3D data
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 100, false);
     //motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
 }
@@ -81,9 +85,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*rad), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*rad), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -120,9 +124,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 int main(int argc, char** argv)
 {
     init(argc, argv, "ScanAssembler");
-
     ScanAssembler assembler;
-
     spin();
 
     return 0;
