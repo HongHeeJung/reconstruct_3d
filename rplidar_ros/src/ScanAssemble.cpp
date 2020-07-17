@@ -28,11 +28,13 @@
 #include <pcl_ros/impl/transforms.hpp>
 
 using namespace Eigen; //space transformation 
-using namespace ros; 
+using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
+int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0;
+const float rad = 0.0174533;  // 
+const int degree_offset = 90;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -62,12 +64,12 @@ ScanAssembler::ScanAssembler(){
 }
 
 void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
-
     // Create control variable    
     //std_msgs::Int16 Control;
 
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
+    // Transform a sensor_msgs::LaserScan into a sensor_msgs::PointCloud2 in target frame
     projector_.transformLaserScanToPointCloud("/laser", *scan, cloud, tfListener_);
 
     // Convert ROS point cloud into PCL point cloud
@@ -83,9 +85,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo - degree_offset) * rad), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * rad), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
