@@ -9,9 +9,7 @@
       direction [0]
       scan buffer [100]
       Affine transformation matrix for [approx 1 degree]
-      [Z][X] axis
-      Vector3f::UnitY() -> if direction == 0, CCW
-      Vector3f::UnitX() -> if direction == 0, CCW
+      Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       
 */
 
@@ -34,7 +32,7 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
-int direction = 0; //0: 아래에서 위 ok 1: 위에서 아래 reverse
+int direction = 0;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -84,9 +82,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitY()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitY()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -123,9 +121,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 int main(int argc, char** argv)
 {
     init(argc, argv, "ScanAssembler");
-
     ScanAssembler assembler;
-
     spin();
 
     return 0;
