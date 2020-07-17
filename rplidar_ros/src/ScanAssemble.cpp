@@ -56,6 +56,7 @@ class ScanAssembler {
 
 ScanAssembler::ScanAssembler(){
     scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 100, &ScanAssembler::scanCallback, this);
+    // RVIZ 상에 나타나는 point cloud
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 100, false);
     //motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
 }
