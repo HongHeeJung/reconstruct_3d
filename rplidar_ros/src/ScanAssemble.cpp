@@ -3,6 +3,13 @@
 
       DATE of last update : 8/11/2018
       2020.07.09 360도 laser scanning version
+      const int STEPS_PER_REV = 360;
+      const int stepDelayMicros = 8000;
+      direction [0]
+      scan buffer [100]
+      Affine transformation matrix for [approx 1 degree]
+      [Z][X] axis
+      
 */
 
 #include <ros/ros.h>
@@ -24,7 +31,7 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; //180도를 1도씩 나눔 -> ScanNO: 카운터
-int direction = 1; //1: 아래에서 위 ok 0: 위에서 아래 reverse
+int direction = 0; //1: 아래에서 위 ok 0: 위에서 아래 reverse
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -74,9 +81,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitY()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo-90)*0.0174533), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitY()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo+90)*0.0174533), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
