@@ -10,7 +10,8 @@
       scan buffer [100]
       Affine transformation matrix for [approx 1 degree]
       [Z][X] axis
-      Vector3f::UnitY() -> Y axis
+      Vector3f::UnitY() -> if direction == 0, CCW
+      Vector3f::UnitX() -> if direction == 0, CCW
       
 */
 
