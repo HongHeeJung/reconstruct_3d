@@ -8,7 +8,7 @@
       const int stepDelayMicros = 8000;
       direction [0]
       scan buffer [100]
-      Affine transformation matrix for [approx 1 degree]
+      Affine transformation matrix for [approx 1.5 degree]
       Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       
 */
