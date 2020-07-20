@@ -104,7 +104,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         ScanNo += 1.5;
         if(ScanNo > 119){
             ScanNo = 0;
-            //direction = (direction+1)%2;
+            direction = (direction+1)%2;
         }
     } else {
         oldcloud = RotatedCloud;
