@@ -1,14 +1,15 @@
 /* 
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
-
       DATE of last update : 8/11/2018
+      
       2020.07.09 360도 laser scanning version
+      2020.07.20 change laser scan division to 1.5 degree 
       
       const int STEPS_PER_REV = 360;
       const int stepDelayMicros = 8000;
       direction [0]
       scan buffer [100]
-      Affine transformation matrix for [approx 1.5 degree]
+      Affine transformation matrix for [approx 1 degree]
       Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       
 */
@@ -34,7 +35,7 @@ using namespace ros;
 int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0;
 const float space_radian = 0.0261799;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
-const int degree_offset = 90;
+const int degree_offset = 60;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
