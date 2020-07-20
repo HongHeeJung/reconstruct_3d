@@ -33,7 +33,7 @@ using namespace ros;
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0;
-const float deg2rad = 0.0174533;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
+const float space_radian = 0.0261799;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
 const int degree_offset = 90;
 
 // Variables store the previous cloud and fully assembled cloud
@@ -57,9 +57,9 @@ class ScanAssembler {
 };
 
 ScanAssembler::ScanAssembler(){
-    scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 100, &ScanAssembler::scanCallback, this);
+    scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 1000, &ScanAssembler::scanCallback, this);
     // RVIZ 상에 나타나는 point cloud
-    full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 100, false);
+    full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 1000, false);
     //motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
 }
 
@@ -85,9 +85,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo - degree_offset) * deg2rad), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo - degree_offset) * space_radian), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * deg2rad), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -101,9 +101,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         assembledCloud = oldcloud + RotatedCloud;
         pcl::copyPointCloud(assembledCloud, oldcloud);
         ScanNo += 1.5;
-        if(ScanNo > 134){
+        if(ScanNo > 119){
             ScanNo = 0;
-            direction = (direction+1)%2;
+            //direction = (direction+1)%2;
         }
     } else {
         oldcloud = RotatedCloud;
