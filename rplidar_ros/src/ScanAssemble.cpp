@@ -33,7 +33,7 @@ using namespace ros;
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0;
-const float rad = 0.0174533;  // 
+const float deg2rad = 0.0174533;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
 const int degree_offset = 90;
 
 // Variables store the previous cloud and fully assembled cloud
@@ -85,9 +85,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo - degree_offset) * rad), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo - degree_offset) * deg2rad), Vector3f::UnitX()));
     } else {
-        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * rad), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * deg2rad), Vector3f::UnitX()));
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -100,15 +100,15 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     if(ScanNo > 0){
         assembledCloud = oldcloud + RotatedCloud;
         pcl::copyPointCloud(assembledCloud, oldcloud);
-        ScanNo += 1;
-        if(ScanNo > 179){
+        ScanNo += 1.5;
+        if(ScanNo > 134){
             ScanNo = 0;
             direction = (direction+1)%2;
         }
     } else {
         oldcloud = RotatedCloud;
         assembledCloud = RotatedCloud;
-        ScanNo += 1;
+        ScanNo += 1.5;
     }
 
     // Convert Assembled cloud to ROS cloud and publish all
