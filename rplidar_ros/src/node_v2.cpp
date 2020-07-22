@@ -52,7 +52,7 @@ void publish_scan(ros::Publisher *pub,
                   size_t node_count, ros::Time start,
                   double scan_time, bool inverted,
                   float angle_min, float angle_max,
-                  float max_distance,
+                  float max_distance, // max distance 정할 수 있음
                   std::string frame_id)
 {
     static int scan_count = 0;
@@ -76,7 +76,7 @@ void publish_scan(ros::Publisher *pub,
     scan_msg.scan_time = scan_time;
     scan_msg.time_increment = scan_time / (double)(node_count-1);
     scan_msg.range_min = 0.15;
-    scan_msg.range_max = max_distance;//8.0;
+    scan_msg.range_max = max_distance; //8.0;
 
     scan_msg.intensities.resize(node_count);
     scan_msg.ranges.resize(node_count);
@@ -177,6 +177,7 @@ bool start_motor(std_srvs::Empty::Request &req,
   return true;
 }
 
+// 아래 부분도 추가됨
 static float getAngle(const rplidar_response_measurement_node_hq_t& node)
 {
     return node.angle_z_q14 * 90.f / 16384.f;
@@ -203,7 +204,7 @@ int main(int argc, char * argv[]) {
     nh_private.param<std::string>("tcp_ip", tcp_ip, "192.168.0.7"); 
     nh_private.param<int>("tcp_port", tcp_port, 20108);
     nh_private.param<std::string>("serial_port", serial_port, "/dev/ttyUSB0"); 
-    nh_private.param<int>("serial_baudrate", serial_baudrate, 115200/*256000*/);//ros run for A1 A2, change to 256000 if A3
+    nh_private.param<int>("serial_baudrate", serial_baudrate, /*115200*/256000);//ros run for A1 A2, change to 256000 if A3
     nh_private.param<std::string>("frame_id", frame_id, "laser_frame");
     nh_private.param<bool>("inverted", inverted, false);
     nh_private.param<bool>("angle_compensate", angle_compensate, false);
@@ -262,6 +263,7 @@ int main(int argc, char * argv[]) {
 
     drv->startMotor();
 
+    // startScan 부분 바뀜
     RplidarScanMode current_scan_mode;
     if (scan_mode.empty()) {
         op_result = drv->startScan(false /* not force scan */, true /* use typical scan mode */, 0, &current_scan_mode);
@@ -294,7 +296,7 @@ int main(int argc, char * argv[]) {
     if(IS_OK(op_result))
     {
         //default frequent is 10 hz (by motor pwm value),  current_scan_mode.us_per_sample is the number of scan point per us
-        angle_compensate_multiple = (int)(1000*1000/current_scan_mode.us_per_sample/10.0/360.0);
+        angle_compensate_multiple = (int)(1000*1000/current_scan_mode.us_per_sample/20.0/360.0); //freqency = 20 Hz
         if(angle_compensate_multiple < 1) 
           angle_compensate_multiple = 1;
         max_distance = current_scan_mode.max_distance;
