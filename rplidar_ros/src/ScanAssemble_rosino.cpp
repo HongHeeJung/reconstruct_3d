@@ -1,7 +1,7 @@
 /* 
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
-
       DATE of last update : 8/11/2018
+
       2020.07.09 360도 laser scanning version
       
       2020.07.20 change laser scan division to 1.5 degree
