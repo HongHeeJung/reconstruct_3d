@@ -12,7 +12,7 @@ const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속�
 const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF 
 
 const int STEPS_PER_REV = 180; // Motor steps per rotation
-const int stepDelayMicros = 5000;
+const int stepDelayMicros = 3000;
 
 void CallBack(const std_msgs::Int16& control);
 
