@@ -312,7 +312,7 @@ int main(int argc, char * argv[]) {
     ros::Time end_scan_time;
     double scan_duration;
     while (ros::ok()) {
-        rplidar_response_measurement_node_hq_t nodes[360*8];
+        rplidar_response_measurement_node_hq_t nodes[360*8]; // send rotation data [360*2]
         size_t   count = _countof(nodes);
 
         start_scan_time = ros::Time::now();
@@ -336,6 +336,8 @@ int main(int argc, char * argv[]) {
                     for( ; i < count; i++ ) {
                         if (nodes[i].dist_mm_q2 != 0) {
                             float angle = getAngle(nodes[i]);
+                            //for A1
+                            //float angle = (float)((nodes[i].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f);
                             int angle_value = (int)(angle * angle_compensate_multiple);
                             if ((angle_value - angle_compensate_offset) < 0) angle_compensate_offset = angle_value;
                             for (j = 0; j < angle_compensate_multiple; j++) {
