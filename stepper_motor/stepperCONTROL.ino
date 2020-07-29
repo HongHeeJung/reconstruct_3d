@@ -11,8 +11,8 @@ const int dirPin = 2;  // Direction 회전 방향
 const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속도가 변함
 const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF 
 
-const int STEPS_PER_REV = 180; // Motor steps per rotation
-const int stepDelayMicros = 3000;
+const int STEPS_PER_REV = 360; // Motor steps per rotation
+const int stepDelayMicros = 4750;
 
 void CallBack(const std_msgs::Int16& control);
 
@@ -24,8 +24,8 @@ void setup() {
   pinMode(stepPin,OUTPUT); 
   pinMode(dirPin,OUTPUT);
   pinMode(enPin,OUTPUT);
-  
-  digitalWrite(enPin,HIGH);
+  digitalWrite(enPin,LOW);
+  //digitalWrite(enPin,HIGH); //for motor only test
 
   nh.initNode();
   nh.subscribe(sub);
@@ -38,16 +38,19 @@ void loop() {
     digitalWrite(stepPin,HIGH);
     delayMicroseconds(stepDelayMicros); 
     digitalWrite(stepPin,LOW); 
-    delayMicroseconds(stepDelayMicros); 
+    delayMicroseconds(stepDelayMicros);
   }
+  digitalWrite(enPin,LOW);
 }
 
 void CallBack(const std_msgs::Int16& control)
 {
-    // direction of rotation
-  if(control.data == 1) {
+  // direction of rotation
+  if(control.data == 0) {
+    digitalWrite(enPin,HIGH);
     digitalWrite(dirPin,HIGH); // Set motor direction clockwise
   } else {
+    digitalWrite(enPin,HIGH);
     digitalWrite(dirPin,LOW); // Set motor direction counterclockwise
   }
 }
