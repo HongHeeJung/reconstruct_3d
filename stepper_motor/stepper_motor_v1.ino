@@ -2,55 +2,55 @@
 2020.07.03 Connections to A4988를 built-in driver version으로 수정
 2020.07.07 SBD 기준 COM이 VCC
 2020.07.08 enable이 HIGH일 때 작동
+2020.07.15 ROS code 추가
 */
 
+#include <ros.h>
+#include <std_msgs/Int16.h>
 const int dirPin = 2;  // Direction 회전 방향
 const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속도가 변함
-const int enPin = 4; // Enable 1 or 연결x: WORK, 0 or GND: OFF 
+const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF 
 
-// Motor steps per rotation
-const int STEPS_PER_REV = 180;
-const int stepDelayMicros = 1000;
+const int STEPS_PER_REV = 800; // Motor steps per rotation
+const int stepDelayMicros = 4800;
+
+void CallBack(const std_msgs::Int16& control);
+
+ros::NodeHandle  nh;
+ros::Subscriber<std_msgs::Int16> sub("/control", &CallBack);
 
 void setup() {
-  
   // Setup the pins as Outputs
   pinMode(stepPin,OUTPUT); 
   pinMode(dirPin,OUTPUT);
   pinMode(enPin,OUTPUT);
+  digitalWrite(enPin,LOW);
+  //digitalWrite(enPin,HIGH); //for motor only test
   
-  digitalWrite(enPin,HIGH);
+  nh.initNode();
+  nh.subscribe(sub);
 }
 
 void loop() {
-  
-  digitalWrite(dirPin,HIGH); // Set motor direction clockwise
-  
-  // Spin motor one rotation slowly
+  nh.spinOnce();
+  // Spin motor one rotation
   for(int x = 0; x < STEPS_PER_REV; x++) {
-    digitalWrite(stepPin,HIGH); 
+    digitalWrite(stepPin,HIGH);
     delayMicroseconds(stepDelayMicros); 
     digitalWrite(stepPin,LOW); 
-    delayMicroseconds(stepDelayMicros); 
+    delayMicroseconds(stepDelayMicros);
   }
-  
-  // Pause for one second
-  //delay(1000); //딜레이 없앰
-  
-  // clockwise로만 연속적으로 회전하도록 주석처리 함
-    /*
-  // Set motor direction counterclockwise
-  digitalWrite(dirPin,LOW);
+  digitalWrite(enPin,LOW);
+}
 
-  // Spin motor two rotations quickly
-  for(int x = 0; x < (STEPS_PER_REV * 2); x++) {
-    digitalWrite(stepPin,HIGH);
-    delayMicroseconds(1000);
-    digitalWrite(stepPin,LOW);
-    delayMicroseconds(1000);
+void CallBack(const std_msgs::Int16& control)
+{
+  // direction of rotation
+  if(control.data == 0) {
+    digitalWrite(enPin,HIGH);
+    digitalWrite(dirPin,HIGH); // Set motor direction clockwise
+  } else {
+    digitalWrite(enPin,HIGH);
+    digitalWrite(dirPin,LOW); // Set motor direction counterclockwise
   }
-  
-  // Pause for one second
-  delay(1000);
-  */
 }
