@@ -37,7 +37,7 @@ using namespace ros;
 int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
 int direction = 0;
 const float space_radian = 0.0261799;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
-const int degree_offset = 60;
+const int degree_offset = 0;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -100,19 +100,21 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     //  If this is first scan save rotated cloud as old cloud
     //  if this is not first scan concatanate rotated cloud and oldcloud
     //  together save new cloud as old cloud and output to rviz
-    if(ScanNo > 0){
-        assembledCloud = oldcloud + RotatedCloud;
-        pcl::copyPointCloud(assembledCloud, oldcloud);
-        ScanNo += 1.5;
-        if(ScanNo > 119){
-            ScanNo = 0;
-            direction = (direction+1)%2;
-        }
-    } else {
-        oldcloud = RotatedCloud;
-        assembledCloud = RotatedCloud;
-        ScanNo += 1.5;
-    }
+
+	if(ScanNo > 0){
+	    assembledCloud = oldcloud + RotatedCloud;
+	    pcl::copyPointCloud(assembledCloud, oldcloud);
+	    ScanNo += 1.5;
+	    if(ScanNo > 119){
+	        ScanNo = 0;
+	        //direction = (direction+1)%2;
+   	    	//sleep(3000);
+	    }
+	} else {
+	    oldcloud = RotatedCloud;
+	    assembledCloud = RotatedCloud;
+	    ScanNo += 1.5;
+	}
 
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
