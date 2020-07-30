@@ -54,11 +54,11 @@ class CheckStep {
 }
 
 CheckStep::CheckStep(){
-    step_sub_ = node_.subscribe<std_msgs::Int16> ("/one_rev", 10, &CheckStep::stepCallback, this);
+    step_sub_ = checknode_.subscribe<std_msgs::Int16> ("/StepNo", 10, &CheckStep::stepCallback, this);
 }
 
 void CheckStep::stepCallback(const std_msgs::Int16::ConstPtr& StepNo){
-    ROS_INFO("StepNo: [%d]", StepNo);
+    ROS_INFO("StepNo: [%d]", StepNo.data);
     return;
 }
 
