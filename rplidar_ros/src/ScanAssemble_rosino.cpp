@@ -100,15 +100,17 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     //  If this is first scan save rotated cloud as old cloud
     //  if this is not first scan concatanate rotated cloud and oldcloud
     //  together save new cloud as old cloud and output to rviz
+    Control.data = direction;
+    motor_control_publisher_.publish(Control); // Start motor
 
 	if(ScanNo > 0){
 	    assembledCloud = oldcloud + RotatedCloud;
 	    pcl::copyPointCloud(assembledCloud, oldcloud);
 	    ScanNo += 1.5;
 	    if(ScanNo > 119){
-	        ScanNo = 0;
-	        //direction = (direction+1)%2;
-   	    	//sleep(3000);
+		ScanNo = 0;
+		//direction = (direction+1)%2;
+		//sleep(3000);
 	    }
 	} else {
 	    oldcloud = RotatedCloud;
@@ -119,8 +121,8 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
     full_point_cloud_publisher_.publish(OutPutCloud);
-    Control.data = direction;
-    motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
+    //Control.data = direction;
+    //motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
 
     // Return to spin until next laser scan taken
     return;
