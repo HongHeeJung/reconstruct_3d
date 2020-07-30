@@ -20,9 +20,10 @@ const int stepDelayMicros = 4750;
 void CallBack(const std_msgs::Int16& control);
 
 ros::NodeHandle node_;
-ros::Subscriber<std_msgs::Int16> sub("/control", &CallBack);
-std_msgs::Int16 stepNo;
-ros::Publisher pub("/one_rev", &stepNo);
+ros::Subscriber<std_msgs::Int16> sub_dir("/control", &CallBack);
+// Create StepNo message
+std_msgs::Int16 StepNo;
+ros::Publisher pub_step("/StepNo", &StepNo);
 
 void setup() {
   // Setup the pins as Outputs
@@ -39,23 +40,23 @@ void setup() {
   }
 
   node_.initNode();
-  node_.subscribe(sub);
-  node_.advertise(pub);
+  node_.subscribe(sub_dir);
+  node_.advertise(pub_step);
 }
 
 void loop() {
   node_.spinOnce();
   // Spin motor one rotation
-  stepNo.data = 0;
-  pub.Publish(&stepNo);
+  StepNo.data = 0;
+  pub_step.Publish(&StepNo);
   for(int x = 0; x < STEPS_PER_REV; x++) {
     digitalWrite(stepPin,HIGH);
     delayMicroseconds(stepDelayMicros); 
     digitalWrite(stepPin,LOW); 
     delayMicroseconds(stepDelayMicros);
   }
-  stepNo.data = 180;
-  pub.Publish(&stepNo);
+  StepNo.data = 120; //revolve 180 deg.
+  pub_step.Publish(&StepNo);
 }
 
 void CallBack(const std_msgs::Int16& control)
