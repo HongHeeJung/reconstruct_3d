@@ -11,7 +11,7 @@ const int dirPin = 2;  // Direction 회전 방향
 const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속도가 변함
 const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF 
 
-const int STEPS_PER_REV = 360; // Motor steps per rotation
+const int STEPS_PER_REV = 240; // Motor steps per rotation (1.5 degree per step)
 const int stepDelayMicros = 4750;
 
 void CallBack(const std_msgs::Int16& control);
