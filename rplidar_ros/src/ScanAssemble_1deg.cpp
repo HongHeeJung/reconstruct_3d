@@ -1,15 +1,14 @@
 /* 
+lidar control - 1.5 degree division + publish direction Version
+
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
       DATE of last update : 8/11/2018
-      
-      2020.07.09 360도 laser scanning version
-      
-      const int STEPS_PER_REV = 360;
-      const int stepDelayMicros = 8000;
-      direction [0]
-      scan buffer [100]
+
+      2020.07.09 Revise 360 degree laser scanning
+      2020.07.20 Change laser scan division to 1.5 degree
       Affine transformation matrix for [approx 1 degree]
-      Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
+      2020.07.21 For Arduino ROS comm.
+      2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       
 */
 
@@ -31,7 +30,7 @@ using namespace Eigen; //space transformation
 using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
+int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: counter
 int direction = 0;
 const float deg2rad = 0.0174533;  // 1 deg
 const int degree_offset = 90;
@@ -58,14 +57,14 @@ class ScanAssembler {
 
 ScanAssembler::ScanAssembler(){
     scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 1000, &ScanAssembler::scanCallback, this);
-    // RVIZ 상에 나타나는 point cloud
+    // Point cloud on RVIZ
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 1000, false);
-    //motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
+    motor_control_publisher_ = node_.advertise<std_msgs::Int16> ("/control", 1, false);
 }
 
 void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Create control variable    
-    //std_msgs::Int16 Control;
+    std_msgs::Int16 Control;
 
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
@@ -114,8 +113,8 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
     full_point_cloud_publisher_.publish(OutPutCloud);
-    //Control.data = direction;
-    //motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
+    Control.data = direction;
+    motor_control_publisher_.publish(Control); //Arduino subscribe the direction
 
     // Return to spin until next laser scan taken
     return;
