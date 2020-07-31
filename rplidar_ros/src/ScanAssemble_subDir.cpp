@@ -1,5 +1,5 @@
 /* 
-lidar control - 1.5 degree division + subscribe direction Version
+lidar control - 1.5 degree division + publish direction Version
 
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
       DATE of last update : 8/11/2018
@@ -9,7 +9,8 @@ lidar control - 1.5 degree division + subscribe direction Version
       Affine transformation matrix for [approx 1 degree]
       2020.07.21 For Arduino ROS comm.
       2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
-      
+      2020.07.31 Add subscriber to get the direction
+
 */
 
 #include <ros/ros.h>
