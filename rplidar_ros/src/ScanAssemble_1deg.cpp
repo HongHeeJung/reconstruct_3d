@@ -1,5 +1,5 @@
 /* 
-lidar control - 1.5 degree division + publish direction Version
+lidar control - 1 degree division + publish direction Version
 
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
       DATE of last update : 8/11/2018
