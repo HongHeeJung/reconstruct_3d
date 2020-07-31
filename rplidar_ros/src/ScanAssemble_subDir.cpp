@@ -44,19 +44,20 @@ sensor_msgs::PointCloud2 OutPutCloud;
 class ScanDirection {
     public:
         ScanDirection();
-        void dirCallback(const std_msgs::Int16::ConstPtr& direction);
+        int dirCallback(const std_msgs::Int16::ConstPtr& dir);
+	int direction = 2; // 2 -> Not working
     private:
         NodeHandle node_;
         Subscriber direction_sub_;
-}
+};
 
 ScanDirection::ScanDirection(){
-    direction_sub_ = node_.subscribe<std_msgs::Int16> ("/direction", 1, false);
+    direction_sub_ = node_.subscribe<std_msgs::Int16> ("/direction", 10, boost::bind(&ScanDirection::dirCallback, this, _1));
 }
 
-void ScanDirection::dirCallback(const std_msgs::Int16::ConstPtr& direction){
-    ROS_INFO("Scan Direction: [%d]", direction.data);
-    return;
+int ScanDirection::dirCallback(const std_msgs::Int16::ConstPtr& dir){
+    direction = dir->data;
+    ROS_INFO("Scan Direction: [%d]", dir->data);
 }
 
 // Create ScanAssembler class
@@ -98,9 +99,13 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
+	ScanNo = 0;
         RotateMatrix.rotate (AngleAxisf (((ScanNo) * space_radian), Vector3f::UnitX()));
-    } else {
+    } else if(direction == 1){
         RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
+    } else {
+	// wait topic
+	ROS_INFO("No Direction Signal");
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -113,9 +118,11 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 	    assembledCloud = oldcloud + RotatedCloud;
 	    pcl::copyPointCloud(assembledCloud, oldcloud);
 	    ScanNo += 1.5;
+	    /*
 	    if(ScanNo > 119){
 		ScanNo = 0;
 	    }
+	    */
 	} else {
 	    oldcloud = RotatedCloud;
 	    assembledCloud = RotatedCloud;
