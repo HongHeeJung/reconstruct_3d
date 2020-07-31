@@ -33,7 +33,6 @@ using namespace ros;
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // Devide 180 deg -> ScanNO: counter
 int direction = 2; // 2 -> Not working
-int new_direction = 3;
 int start_motor = 0;
 const float space_radian = 0.0261799;
 const int degree_offset = 120;
@@ -57,7 +56,7 @@ ScanDirection::ScanDirection(){
 }
 
 int ScanDirection::dirCallback(const std_msgs::Int16::ConstPtr& dir){
-    new_direction = dir->data;
+    direction = dir->data;
     ROS_INFO("Scan Direction: [%d]", dir->data);
 }
 
@@ -84,7 +83,6 @@ ScanAssembler::ScanAssembler(){
 }
 
 void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
-    direction = new_direction;
     // Create start variable
     std_msgs::Int16 Start;
     start_motor = 1;
@@ -128,7 +126,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 	    assembledCloud = oldcloud + RotatedCloud;
 	    pcl::copyPointCloud(assembledCloud, oldcloud);
 	    ScanNo += 1.5;
-	    if(direction != new_direction){
+	    if(ScanNo > 239){
 		ScanNo = 0;
 	    }
 	} else {
@@ -136,8 +134,20 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 	    assembledCloud = RotatedCloud;
 	    ScanNo += 1.5;
 	}
-    }
-    else {
+    } /*else if(direction == 1){
+	if(ScanNo > 0){
+	    assembledCloud = oldcloud + RotatedCloud;
+	    pcl::copyPointCloud(assembledCloud, oldcloud);
+	    ScanNo += 1.5;
+	    if(direction == 0){
+		ScanNo = 0;
+	    }
+	} else {
+	    oldcloud = RotatedCloud;
+	    assembledCloud = RotatedCloud;
+	    ScanNo += 1.5;
+	}
+    }*/ else {
 	ROS_INFO("WAIT...");
     }
 
