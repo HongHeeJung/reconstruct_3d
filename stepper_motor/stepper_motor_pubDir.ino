@@ -6,7 +6,7 @@ stepper motor control - publish direction version
 2020.07.08 if(enable == HIGH) ON
 2020.07.15 Add ROS code for ros serial comm.
 2020.07.31 Publish direction node to control the Initializing point 
-           & Starter
+           & Subscribe Starter
 */
 
 #include <ros.h>
