@@ -97,7 +97,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     RotateMatrix.translation() << 0.0, 0.0, 0.0;
 
     // Rotate matrix has offset of 90 degrees to set start pos
-    if(*direction == 0){
+    if(direction == 0){
         RotateMatrix.rotate (AngleAxisf (((ScanNo) * space_radian), Vector3f::UnitX()));
     } else {
         RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
