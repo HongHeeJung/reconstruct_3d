@@ -9,7 +9,7 @@ lidar control - 1.5 degree division + subscribe direction Version
       Affine transformation matrix for [approx 1 degree]
       2020.07.21 For Arduino ROS comm.
       2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
-      2020.07.31 Add subscriber to get the direction
+      2020.07.31 Add subscriber to get the direction & Add starter
 
 */
 
@@ -32,7 +32,8 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // Devide 180 deg -> ScanNO: counter
-int direction = 0;
+int direction = 2; // 2 -> Not working
+int start_motor = 0;
 const float space_radian = 0.0261799;
 const int degree_offset = 120;
 
@@ -45,7 +46,6 @@ class ScanDirection {
     public:
         ScanDirection();
         int dirCallback(const std_msgs::Int16::ConstPtr& dir);
-	int direction = 2; // 2 -> Not working
     private:
         NodeHandle node_;
         Subscriber direction_sub_;
@@ -70,17 +70,25 @@ class ScanAssembler {
         tf::TransformListener tfListener_;
         laser_geometry::LaserProjection projector_;
 
+	Publisher start_pub_;
         Subscriber scan_sub_;
         Publisher full_point_cloud_publisher_;
 };
 
 ScanAssembler::ScanAssembler(){
+    start_pub_ = node_.advertise<std_msgs::Int16> ("/start", 1, false);
     scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 1000, &ScanAssembler::scanCallback, this);
     // Point cloud on RVIZ
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 1000, false);
 }
 
 void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
+    // Create start variable
+    std_msgs::Int16 Start;
+    start_motor = 1;
+    Start.data = start_motor;
+    start_pub_.publish(Start);
+
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
     // Transform a sensor_msgs::LaserScan into a sensor_msgs::PointCloud2 in target frame
@@ -126,6 +134,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 	    assembledCloud = RotatedCloud;
 	    ScanNo += 1.5;
 	}
+    }
+    else {
+	ROS_INFO("WAIT...");
     }
 
     // Convert Assembled cloud to ROS cloud and publish all
