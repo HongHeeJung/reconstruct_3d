@@ -99,7 +99,6 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-	ScanNo = 0;
         RotateMatrix.rotate (AngleAxisf (((ScanNo) * space_radian), Vector3f::UnitX()));
     } else if(direction == 1){
         RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
@@ -114,20 +113,20 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     //  If this is first scan save rotated cloud as old cloud
     //  if this is not first scan concatanate rotated cloud and oldcloud
     //  together save new cloud as old cloud and output to rviz
+    if(direction == 0 || direction == 1){
 	if(ScanNo > 0){
 	    assembledCloud = oldcloud + RotatedCloud;
 	    pcl::copyPointCloud(assembledCloud, oldcloud);
 	    ScanNo += 1.5;
-	    /*
 	    if(ScanNo > 119){
 		ScanNo = 0;
 	    }
-	    */
 	} else {
 	    oldcloud = RotatedCloud;
 	    assembledCloud = RotatedCloud;
 	    ScanNo += 1.5;
 	}
+    }
 
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
