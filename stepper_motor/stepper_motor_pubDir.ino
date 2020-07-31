@@ -5,7 +5,8 @@ stepper motor control - publish direction version
 2020.07.07 COM is VCC(5V) for SBD stepper motor
 2020.07.08 if(enable == HIGH) ON
 2020.07.15 Add ROS code for ros serial comm.
-2020.07.31 Publish direction node to control the Start point
+2020.07.31 Publish direction node to control the Initializing point 
+           & Starter
 */
 
 #include <ros.h>
@@ -18,9 +19,12 @@ const int STEPS_PER_REV = 800; // Motor steps per rotation (1.5 degree per step)
 const int stepDelayMicros = 4800;
 int direction_controller = 0;
 
+void startCallback(const std_msgs::Int16& start);
+
 ros::NodeHandle node_;
 // Create StepNo message
 std_msgs::Int16 Direction;
+ros::Subscriber<std_msgs::Int16> sub_start("/starter", &startCallback);
 ros::Publisher pub_direction("/direction", &Direction);
 
 void setup() {
@@ -28,9 +32,19 @@ void setup() {
   pinMode(stepPin,OUTPUT); 
   pinMode(dirPin,OUTPUT);
   pinMode(enPin,OUTPUT);
-
+  digitalWrite(enPin,LOW);
+ 
   node_.initNode();
   node_.advertise(pub_direction);
+  node_.subscribe(sub_start);
+}
+
+void startCallback(const std_msgs::Int16& start){
+  if(start.data == 0){
+    digitalWrite(enPin,LOW); // To STOP
+  } else {
+    digitalWrite(enPin,HIGH); // To START
+  }  
 }
 
 void loop() {
@@ -38,7 +52,7 @@ void loop() {
   // Spin motor one rotation
   Direction.data = direction_controller;
   pub_direction.publish(&Direction);
-  digitalWrite(enPin,HIGH);
+  
   //revolve 180 deg.
   for(int x = 0; x < STEPS_PER_REV; x++) {
     digitalWrite(stepPin,HIGH);
