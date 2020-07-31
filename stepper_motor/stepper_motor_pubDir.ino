@@ -16,7 +16,7 @@ const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF
 
 const int STEPS_PER_REV = 800; // Motor steps per rotation (1.5 degree per step)
 const int stepDelayMicros = 4800;
-const int direction_controller = 0;
+int direction_controller = 0;
 
 ros::NodeHandle node_;
 // Create StepNo message
@@ -37,8 +37,8 @@ void loop() {
   node_.spinOnce();
   // Spin motor one rotation
   Direction.data = direction_controller;
-  pub_direction.Publish(&Direction);
-  digitalWrite(enPin,High);
+  pub_direction.publish(&Direction);
+  digitalWrite(enPin,HIGH);
   //revolve 180 deg.
   for(int x = 0; x < STEPS_PER_REV; x++) {
     digitalWrite(stepPin,HIGH);
