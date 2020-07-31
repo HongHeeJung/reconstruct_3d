@@ -1,18 +1,14 @@
 /* 
+lidar control - 1.5 degree division + publish direction Version
+
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
       DATE of last update : 8/11/2018
 
-      2020.07.09 360도 laser scanning version
-      
-      2020.07.20 change laser scan division to 1.5 degree
-      const int STEPS_PER_REV = 360;
-      const int stepDelayMicros = 8000;
-      direction [0]
-      scan buffer [100]
+      2020.07.09 Revise 360 degree laser scanning
+      2020.07.20 Change laser scan division to 1.5 degree
       Affine transformation matrix for [approx 1 degree]
-      Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
-
-      2020.07.21 for Arduino ROS comm.
+      2020.07.21 For Arduino ROS comm.
+      2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       
 */
 
@@ -34,7 +30,7 @@ using namespace Eigen; //space transformation
 using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: 카운터
+int ScanNo = 0; // 180도를 1도씩 나눔 -> ScanNO: counter
 int direction = 0;
 const float space_radian = 0.0261799;  // degree to radian 변환값을 바꿔서 각도를 원하는 값으로 나눔
 const int degree_offset = 0;
@@ -109,8 +105,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 	    ScanNo += 1.5;
 	    if(ScanNo > 119){
 		ScanNo = 0;
-		//direction = (direction+1)%2;
-		//sleep(3000);
+		direction = (direction+1)%2;
 	    }
 	} else {
 	    oldcloud = RotatedCloud;
@@ -121,8 +116,8 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Convert Assembled cloud to ROS cloud and publish all
     pcl::toROSMsg(assembledCloud, OutPutCloud);
     full_point_cloud_publisher_.publish(OutPutCloud);
-    //Control.data = direction;
-    //motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
+    Control.data = direction;
+    motor_control_publisher_.publish(Control); //Arduino가 Subscribe 방향
 
     // Return to spin until next laser scan taken
     return;
