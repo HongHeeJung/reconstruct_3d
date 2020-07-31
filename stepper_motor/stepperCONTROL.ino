@@ -1,4 +1,6 @@
 /*
+For other stepper motor
+
  The motor should revolve one revolution in one direction, then
  one revolution in the other direction.
 */
