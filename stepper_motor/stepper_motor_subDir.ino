@@ -1,4 +1,6 @@
 /*
+stepper motor control - subcribe direction version
+
 2020.07.03 Connections to A4988를 built-in driver version으로 수정
 2020.07.07 SBD 기준 COM이 VCC
 2020.07.08 enable이 HIGH일 때 작동
