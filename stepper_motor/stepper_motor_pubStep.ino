@@ -1,4 +1,6 @@
 /*
+stepper motor control - subscribe direction + publish step version
+
 2020.07.03 Revise 'Connections to A4988' to 'built-in driver version'
 2020.07.07 COM is VCC(5V) for SBD stepper motor
 2020.07.08 if(enable == HIGH) ON
