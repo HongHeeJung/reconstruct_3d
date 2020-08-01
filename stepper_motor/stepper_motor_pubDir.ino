@@ -6,6 +6,8 @@ stepper motor control - publish direction version
 2020.07.08 if(enable == HIGH) ON
 2020.07.15 Add ROS code for ros serial comm.
 2020.07.31 Publish direction node to control the Start point
+2020.08.01 Add delay microseconds before runnung the motor
+
 */
 
 #include <ros.h>
@@ -54,8 +56,10 @@ void loop() {
   Direction.data = direction_controller;
   pub_direction.publish(&Direction);
   printf("========== Direction: [%d] ==========", direction_controller);
+  
   //revolve 180 deg.
   for(int x = 0; x < STEPS_PER_REV; x++) {
+    delayMicroseconds(stepDelayMicros);
     digitalWrite(stepPin,HIGH);
     delayMicroseconds(stepDelayMicros); 
     digitalWrite(stepPin,LOW); 
