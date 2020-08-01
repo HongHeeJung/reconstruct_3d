@@ -161,6 +161,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
 int main(int argc, char** argv)
 {
+    // You must call one of the versions of ros::init() before using any other part of the ROS system
     init(argc, argv, "ScanAssembler");
     ScanAssembler assembler;
     ScanDirection direct;
