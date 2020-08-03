@@ -32,7 +32,7 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // Devide 180 deg -> ScanNO: counter
-int direction = 5; // 5 -> Not working
+int direction = -1; // 5 -> Not working
 int start_motor = 0;
 const float space_radian = 0.0261799;
 const int degree_offset = 120;
@@ -110,8 +110,6 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         RotateMatrix.rotate (AngleAxisf (((ScanNo) * space_radian), Vector3f::UnitX()));
     } else if(direction == 1){
         RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
-    } else if(direction == 2 || direction == 3){
-	ROS_INFO("Reset ScanNo");
     } else {
 	// wait topic
 	ROS_INFO("No Direction Signal");
@@ -128,13 +126,14 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
             assembledCloud = oldcloud + RotatedCloud;
             pcl::copyPointCloud(assembledCloud, oldcloud);
             ScanNo += 1.5;
+	    if(ScanNo > 120){
+	        ScanNo = 0;
+	    }
         } else {
             oldcloud = RotatedCloud;
             assembledCloud = RotatedCloud;
             ScanNo += 1.5;
         }
-    } else if(direction == 2 || direction == 3){
-	ScanNo = 0;
     } else {
 	ROS_INFO("WAIT...");
     }
