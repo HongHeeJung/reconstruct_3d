@@ -18,7 +18,7 @@ const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF
 
 const int STEPS_PER_REV = 800; // Motor steps per rotation (1.5 degree per step)
 const int stepDelayMicros = 6200;
-int direction_controller = 2;
+int direction_controller = -1;
 int s = 0;
 
 void startCallback(const std_msgs::Int16& start);
