@@ -32,10 +32,10 @@ using namespace ros;
 
 // Variable to count how many 2d scans have been taken
 int ScanNo = 0; // Devide 180 deg -> ScanNO: counter
-int direction = -1; // 5 -> Not working
+int direction = -1; // Not working
 int start_motor = 0;
 const float space_radian = 0.0261799;
-const int degree_offset = 120;
+const int degree_offset = 0;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
