@@ -122,32 +122,19 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     //  if this is not first scan concatanate rotated cloud and oldcloud
     //  together save new cloud as old cloud and output to rviz
     if(direction == 0 || direction == 1){
-	if(ScanNo > 0){
-	    assembledCloud = oldcloud + RotatedCloud;
-	    pcl::copyPointCloud(assembledCloud, oldcloud);
-	    ScanNo += 1.5;
-	    if(ScanNo > 239){
-		ScanNo = 0;
-	    }
-	} else {
-	    oldcloud = RotatedCloud;
-	    assembledCloud = RotatedCloud;
-	    ScanNo += 1.5;
-	}
-    } /*else if(direction == 1){
-	if(ScanNo > 0){
-	    assembledCloud = oldcloud + RotatedCloud;
-	    pcl::copyPointCloud(assembledCloud, oldcloud);
-	    ScanNo += 1.5;
-	    if(direction == 0){
-		ScanNo = 0;
-	    }
-	} else {
-	    oldcloud = RotatedCloud;
-	    assembledCloud = RotatedCloud;
-	    ScanNo += 1.5;
-	}
-    }*/ else {
+        if(ScanNo > 0){
+            assembledCloud = oldcloud + RotatedCloud;
+            pcl::copyPointCloud(assembledCloud, oldcloud);
+            ScanNo += 1.5;
+            if(direction == 2 || direction == 3){
+                ScanNo = 0;
+            }
+        } else {
+            oldcloud = RotatedCloud;
+            assembledCloud = RotatedCloud;
+            ScanNo += 1.5;
+        }
+    } else {
 	ROS_INFO("WAIT...");
     }
 
