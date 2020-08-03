@@ -65,5 +65,7 @@ void loop() {
     digitalWrite(stepPin,LOW); 
     delayMicroseconds(stepDelayMicros);
   }
+  Direction.data = direction_controller + 2;
+  pub_direction.publish(&Direction); // Reset ScanNo
   direction_controller = (direction_controller+1)%2;
 }
