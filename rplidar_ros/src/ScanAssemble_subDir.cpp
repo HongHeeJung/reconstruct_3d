@@ -10,6 +10,7 @@ lidar control - 1.5 degree division + subscribe direction Version
       2020.07.21 For Arduino ROS comm.
       2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       2020.07.31 Add subscriber to get the direction
+      2020.08.04 Initialized by direction topic
 
 */
 
@@ -31,11 +32,11 @@ using namespace Eigen; //space transformation
 using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0; // Devide 180 deg -> ScanNO: counter
+int ScanNo = 0; // Devide 180 deg -> ScanNo: counter
 int direction = -1; // Not working
 int start_motor = 0;
 const float space_radian = 0.0261799;
-const int degree_offset = 120;
+const int degree_offset = 0;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
@@ -56,8 +57,13 @@ ScanDirection::ScanDirection(){
 }
 
 int ScanDirection::dirCallback(const std_msgs::Int16::ConstPtr& dir){
-    direction = dir->data;
-    ROS_INFO("Scan Direction: [%d]", dir->data);
+    int new_direction = dir->data;
+    if(new_direction != direction){
+        ScanNo = 0;
+        ROS_INFO("========== Initialize [ScanNo] ==========");
+        direction = new_direction;
+        ROS_INFO("Scan Direction: [%d]", dir->data);
+    }
 }
 
 // Create ScanAssembler class
@@ -88,6 +94,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     start_motor = 1;
     Start.data = start_motor;
     start_pub_.publish(Start);
+    ROS_INFO("========== Start Motor ==========");
 
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
@@ -111,8 +118,8 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     } else if(direction == 1){
         RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
     } else {
-	// wait topic
-	ROS_INFO("No Direction Signal");
+	    // wait topic
+	    ROS_INFO("No Direction Signal.");
     }
 
     // Rotate Tempcloud by rotation matrix timesed by the scan number, AKA how many scan have been taken.
@@ -126,16 +133,13 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
             assembledCloud = oldcloud + RotatedCloud;
             pcl::copyPointCloud(assembledCloud, oldcloud);
             ScanNo += 1.5;
-	    if(ScanNo > 120){
-	        ScanNo = 0;
-	    }
         } else {
             oldcloud = RotatedCloud;
             assembledCloud = RotatedCloud;
             ScanNo += 1.5;
         }
     } else {
-	ROS_INFO("WAIT...");
+	    ROS_INFO("WAIT...");
     }
 
     // Convert Assembled cloud to ROS cloud and publish all
