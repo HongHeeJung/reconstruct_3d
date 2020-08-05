@@ -36,7 +36,7 @@ int ScanNo = 0; // Devide 180 deg -> ScanNo: counter
 int direction = -1; // Not working
 int start_motor = 0;
 const float space_radian = 0.0261799;
-const int degree_offset = 0;
+const int degree_offset = 120;
 
 // Variables store the previous cloud and fully assembled cloud
 pcl::PointCloud<pcl::PointXYZ> oldcloud;
