@@ -11,6 +11,7 @@ lidar control - 1.5 degree division + subscribe direction Version
       2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       2020.07.31 Add subscriber to get the direction
       2020.08.04 Initialized by direction topic
+      2020.08.05 DONE
 
 */
 
@@ -28,11 +29,11 @@ lidar control - 1.5 degree division + subscribe direction Version
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/impl/transforms.hpp>
 
-using namespace Eigen; //space transformation 
+using namespace Eigen;
 using namespace ros;
 
 // Variable to count how many 2d scans have been taken
-int ScanNo = 0; // Devide 180 deg -> ScanNo: counter
+int ScanNo = 0;
 int direction = -1; // Not working
 int start_motor = 0;
 const float space_radian = 0.0261799;
