@@ -94,7 +94,6 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     start_motor = 1;
     Start.data = start_motor;
     start_pub_.publish(Start);
-    ROS_INFO("========== Start Motor ==========");
 
     // Convert laser scan to point cloud
     sensor_msgs::PointCloud2 cloud;
