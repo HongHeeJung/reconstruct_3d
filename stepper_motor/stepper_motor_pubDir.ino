@@ -7,16 +7,17 @@ stepper motor control - publish direction version
 2020.07.15 Add ROS code for ros serial comm.
 2020.07.31 Publish direction node to control the Start point
 2020.08.01 Add delay microseconds before runnung the motor
+2020.08.05 DONE
 
 */
 
 #include <ros.h>
 #include <std_msgs/Int16.h>
-const int dirPin = 2;  // Direction 회전 방향
-const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속도가 변함
-const int enPin = 4;   // Enable 1 or 연결x: WORK, 0 or GND: OFF 
+const int dirPin = 2;  // Rotation Direction
+const int stepPin = 3; // Making a Step
+const int enPin = 4;   // Enable = 1 or Not connetced: WORK, Enable = 0 or GND: OFF 
 
-const int STEPS_PER_REV = 800; // Motor steps per rotation (1.5 degree per step)
+const int STEPS_PER_REV = 800;
 const int stepDelayMicros = 6150;
 int direction_controller = -1;
 int s = 0;
