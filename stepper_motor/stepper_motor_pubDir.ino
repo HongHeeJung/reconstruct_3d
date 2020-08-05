@@ -50,10 +50,10 @@ void setup() {
 void startCallback(const std_msgs::Int16& start){
   s = start.data;
   if(start.data == 0){
-    digitalWrite(enPin,LOW); // To STOP
+    digitalWrite(enPin,LOW);
     Serial.print("========== WAITTING... ==========");
   } else {
-    digitalWrite(enPin,HIGH); // To START
+    digitalWrite(enPin,HIGH);
     Serial.print("========== START! ==========");
   }  
 }
