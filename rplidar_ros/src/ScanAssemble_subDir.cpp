@@ -29,7 +29,7 @@ lidar control - 1.5 degree division + subscribe direction Version
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/impl/transforms.hpp>
 
-#define DEG2RAD(x) (M_PI/180.0)*x
+#define DEG2RAD(x) (M_PI/180.0)*x*2
 using namespace Eigen;
 using namespace ros;
 
@@ -133,11 +133,11 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
         if(ScanNo > 0){
             assembledCloud = oldcloud + RotatedCloud;
             pcl::copyPointCloud(assembledCloud, oldcloud);
-            ScanNo += 1.5;
+            ScanNo ++;
         } else {
             oldcloud = RotatedCloud;
             assembledCloud = RotatedCloud;
-            ScanNo += 1.5;
+            ScanNo ++;
         }
     } else {
 	    ROS_INFO("WAIT...");
