@@ -29,6 +29,7 @@ lidar control - 1.5 degree division + subscribe direction Version
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/impl/transforms.hpp>
 
+#define DEG2RAD(x) (M_PI/180.0)*x
 using namespace Eigen;
 using namespace ros;
 
@@ -114,9 +115,9 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo) * space_radian), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf ((DEG2RAD(ScanNo)), Vector3f::UnitX()));
     } else if(direction == 1){
-        RotateMatrix.rotate (AngleAxisf (((ScanNo + degree_offset) * space_radian), Vector3f::UnitX()));
+        RotateMatrix.rotate (AngleAxisf ((DEG2RAD(ScanNo + degree_offset)), Vector3f::UnitX()));
     } else {
 	    // wait topic
 	    ROS_INFO("No Direction Signal.");
