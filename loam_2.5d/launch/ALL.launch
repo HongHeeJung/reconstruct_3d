@@ -9,7 +9,7 @@
     <param name="scan_mode"           type="string" value="Sensitivity"/>
   </node>
   
-  <node type="Assemble" pkg="rplidar_ros" name="Scan_assembler" output="screen">
+  <node type="Assemble" pkg="loam_2.5d" name="Scan_Odom_assembler" output="screen">
     <param name="frame_id" type="string" value="laser"/>
   </node>
   
