@@ -9,7 +9,8 @@ lidar control - 1.5 degree division + subscribe direction Version
       2020.07.24 Change Scan data & Vector3f::UnitX() -> [X] axis -> if(direction == 0) CW
       2020.07.31 Add subscriber to get the direction
       2020.08.04 Initialized by direction topic
-      2020.08.05 DONE
+      2020.08.05 Done for scanning 3d
+      2020.08.12 Add odometry
 */
 
 // Laser 2 Point cloud
