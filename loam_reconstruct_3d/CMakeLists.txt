@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(loam_2.5d)
+project(loam_reconstruct_3d)
 
 set(RPLIDAR_SDK_PATH "./sdk/")
 
