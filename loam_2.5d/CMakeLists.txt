@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rplidar_ros)
+project(loam_2.5d)
 
 set(RPLIDAR_SDK_PATH "./sdk/")
 
@@ -10,7 +10,10 @@ FILE(GLOB RPLIDAR_SDK_SRC
 )
 
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  nav_msgs
   roscpp
+  rospy
   rosconsole
   sensor_msgs
   laser_geometry
@@ -29,7 +32,9 @@ include_directories(
   ${PCL_INCLUDE_DIRS}
 )
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy std_msgs
+)
 
 add_executable(rplidarNode src/node.cpp ${RPLIDAR_SDK_SRC})
 target_link_libraries(rplidarNode ${catkin_LIBRARIES})
@@ -40,7 +45,7 @@ target_link_libraries(rplidarNodeClient ${catkin_LIBRARIES})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable( Assemble src/ScanAssemble.cpp )
+add_executable( Assemble src/ScanOdomAssemble.cpp )
 target_link_libraries(Assemble ${catkin_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
 install(TARGETS rplidarNode rplidarNodeClient
