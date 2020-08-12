@@ -12,8 +12,9 @@ lidar control - 1.5 degree division + subscribe direction Version
       2020.08.05 DONE
 */
 
+// Laser 2 Point cloud
 #include <ros/ros.h>
-#include <tf/transform_listener.h> // ROS library
+#include <tf/transform_listener.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <laser_geometry/laser_geometry.h>
 #include <std_msgs/Int16.h>
@@ -26,8 +27,7 @@ lidar control - 1.5 degree division + subscribe direction Version
 #include <pcl_ros/transforms.h>
 #include <pcl_ros/impl/transforms.hpp>
 
-
-//Odom
+// Odometry
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
@@ -51,7 +51,7 @@ pcl::PointCloud<pcl::PointXYZ> oldcloud;
 pcl::PointCloud<pcl::PointXYZ> assembledCloud;
 sensor_msgs::PointCloud2 OutPutCloud;
 
-//Odom
+// Array  to get odometry data
 double timeLaserOdometry;
 bool newLaserOdometry = false;
 float odom[10] = {0};
@@ -91,14 +91,11 @@ class ScanDirection {
     private:
         NodeHandle node_;
         Subscriber direction_sub_;
-Subscriber subLaserOdometry;
 };
 
 ScanDirection::ScanDirection(){
-    direction_sub_ = node_.subscribe<std_msgs::Int16> ("/direction", 10, boost::bind(&ScanDirection::dirCallback, this, _1));
-
-subLaserOdometry = node_.subscribe<nav_msgs::Odometry> 
-                                     ("/camera/odom/sample", 5, laserOdometryHandler);
+    direction_sub_ = node_.subscribe<std_msgs::Int16> 
+                                ("/direction", 10, boost::bind(&ScanDirection::dirCallback, this, _1));
 }
 
 int ScanDirection::dirCallback(const std_msgs::Int16::ConstPtr& dir){
@@ -121,14 +118,18 @@ class ScanAssembler {
         tf::TransformListener tfListener_;
         laser_geometry::LaserProjection projector_;
 
-	Publisher start_pub_;
+    	Publisher start_pub_;
         Subscriber scan_sub_;
+        Subscriber subLaserOdometry;
         Publisher full_point_cloud_publisher_;
 };
 
 ScanAssembler::ScanAssembler(){
     start_pub_ = node_.advertise<std_msgs::Int16> ("/start", 1, false);
-    scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> ("/scan", 1000, &ScanAssembler::scanCallback, this);
+    subLaserOdometry = node_.subscribe<nav_msgs::Odometry> 
+                                ("/camera/odom/sample", 5, laserOdometryHandler);
+    scan_sub_ = node_.subscribe<sensor_msgs::LaserScan> 
+                                ("/scan", 1000, &ScanAssembler::scanCallback, this);
     // Point cloud on RVIZ
     full_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> ("/fullcloud", 1000, false);
 }
@@ -154,7 +155,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 
     // Create Affine transformation matrix for 0.0174533 radians around Z axis (approx 1 degree) of rotation with no translation.
     Affine3f RotateMatrix = Affine3f::Identity();
-    RotateMatrix.translation() << 10.0, 0.0, 0.0;
+    RotateMatrix.translation() << 0.0, 0.0, 0.0;
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
