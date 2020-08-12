@@ -1,4 +1,4 @@
-# motor_control_JetsonTX2
+# Reconstruct 2.5d map using 2d Lidar
 
 catkin_ws: ros, mavros, mavlink, px4 firmware  
 rplidar_ros: rplidar a3
