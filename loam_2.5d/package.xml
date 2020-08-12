@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <package>
-  <name>rplidar_ros</name>
-  <version>1.10.0</version>
-  <description>The rplidar ros package, support rplidar A2/A1 and A3/S1</description>
-
+  <name>loam_2.5d</name>
+  <version>.0.0</version>
+  <description>This is a ROS implementation of LOAM for rplidar A3 and realsense camera T265</description>
+  
   <maintainer email="ros@slamtec.com">Slamtec ROS Maintainer</maintainer>
+  
   <license>BSD</license>
+
+  <author email="honghj621@gmail.com">HeeJung Hong</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
@@ -16,5 +19,16 @@
   <run_depend>rosconsole</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>tf</run_depend>
 
 </package>
