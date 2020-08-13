@@ -11,9 +11,9 @@
     <param name="scan_mode"           type="string" value="Sensitivity"/>
   </node>
   
-  <node type="Assemble" pkg="loam_reconstruct_3d" name="Scan_Odom_assembler" output="screen">
+  <node type="Assemble" pkg="loam_rotating_2d" name="Scan_Odom_assembler" output="screen">
     <param name="frame_id" type="string" value="laser"/>
   </node>
   
-  <node type ="rviz" pkg="rviz" name="rviz" args="-d $(find rplidar_ros)/rviz/RVIZConfig_Reconstruct.rviz"/>
+  <node type ="rviz" pkg="rviz" name="rviz" args="-d $(find loam_rotating_2d)/rviz/RVIZConfig_Reconstruct.rviz"/>
 </launch>

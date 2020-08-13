@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>loam_reconstruct_3d</name>
+  <name>loam_rotating_2d</name>
   <version>0.0.0</version>
   <description>This is a ROS implementation of LOAM for rplidar A3 and realsense camera T265</description>
   

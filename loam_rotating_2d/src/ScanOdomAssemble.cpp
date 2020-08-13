@@ -1,7 +1,11 @@
 /* 
 lidar control - 1.5 degree division + subscribe direction Version
+      
       This code was written by Jonathan Wheadon and Ijaas at Plymouth university for module ROCO318
       DATE of last update : 8/11/2018
+      +
+      Revised by Hee Jung Hong for LOAM
+      
       2020.07.09 Revise 360 degree laser scanning
       2020.07.20 Change laser scan division to 1.5 degree
       Affine transformation matrix for [approx 1 degree]
