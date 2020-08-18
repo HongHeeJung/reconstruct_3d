@@ -161,6 +161,7 @@ void ScanAssembler::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     // Create Affine transformation matrix(3x3) for space_radians around X axis (approx 1 degree) of rotation with no translation.
     Affine3f RotateMatrix = Affine3f::Identity();
     RotateMatrix.translation() << odom[3], odom[4], odom[5];
+    ROS_INFO("=============== Translated ===============");
 
     // Rotate matrix has offset of 90 degrees to set start pos
     if(direction == 0){
