@@ -1,4 +1,4 @@
-# Reconstruct 2.5d map using 2d Lidar
+# Reconstruct 3d map using 2d Lidar
 
 rplidar_ros: rplidar a3
   
