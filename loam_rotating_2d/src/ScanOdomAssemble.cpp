@@ -209,5 +209,12 @@ int main(int argc, char** argv)
     ScanDirection direct;
     spin();
 
+    /*
+    // for identify the "frame_id and child_frame_id" of odometry
+    nav_msgs::Odometry laserOdometry;
+    laserOdometry.header.frame_id = "/camera_init";
+    laserOdometry.child_frame_id = "/camera";
+    */
+   
     return 0;
 }
