@@ -210,11 +210,11 @@ int main(int argc, char** argv)
     spin();
 
     /*
-    // for identify the "frame_id and child_frame_id" of odometry
+    // for identify the "frame_id and child_frame_id" of odometry -> setting frame by tf
     nav_msgs::Odometry laserOdometry;
     laserOdometry.header.frame_id = "/camera_init";
     laserOdometry.child_frame_id = "/camera";
     */
-   
+    
     return 0;
 }
