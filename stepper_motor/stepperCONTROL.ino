@@ -7,6 +7,7 @@ stepper motor control - publish direction version
 2020.07.15 Add ROS code for ros serial comm.
 2020.07.31 Publish direction node to control the Start point
 2020.08.01 Add delay microseconds before runnung the motor
+2020.08.24 Faster version
 
 */
 
