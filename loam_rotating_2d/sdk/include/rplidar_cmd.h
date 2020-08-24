@@ -1,4 +1,8 @@
 /*
+    Make Lidar scanning speed faster. [660 -> 1000]
+*/
+
+/*
  *  RPLIDAR SDK
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
