@@ -80,6 +80,7 @@ Visualization Manager:
       Update Interval: 0
       Value: true
     - Angle Tolerance: 0.1
+    
       Class: rviz/Odometry
       Color: 255; 25; 0
       Enabled: true
