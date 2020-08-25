@@ -1,13 +1,14 @@
 /*
 stepper motor control - subscribe direction + publish step version
 
-2020.07.03 Revise 'Connections to A4988' to 'built-in driver version'
-2020.07.07 COM is VCC(5V) for SBD stepper motor
-2020.07.08 if(enable == HIGH) ON
-2020.07.15 Add ROS code for ros serial comm.
-2020.07.29 Initialize motor postion by turnning the enable pin - del
-2020.07.30 Add publish code for alerting one revolution 
-           & set up one revolution for constant velocity
+    2020.07.03 Revise 'Connections to A4988' to 'built-in driver version'
+    2020.07.07 COM is VCC(5V) for SBD stepper motor
+    2020.07.08 if(enable == HIGH) ON
+    2020.07.15 Add ROS code for ros serial comm.
+    2020.07.29 Initialize motor postion by turnning the enable pin - delete
+    2020.07.30 Add publish code for alerting one revolution. 
+              & set up one revolution for constant velocity.
+    2020.08.25 Add command for exit when revolution is up to 180 deg.
 */
 
 #include <ros.h>
@@ -15,6 +16,7 @@ stepper motor control - subscribe direction + publish step version
 
 #include <stdio.h>
 #include <coino.h>
+#define MAX_LEN_LINE    10
 
 const int dirPin = 2;  // Direction 회전 방향
 const int stepPin = 3; // Step  클럭을 만들어 주면 펄스 수마큼 속도가 변함
@@ -76,5 +78,31 @@ void CallBack(const std_msgs::Int16& control)
 }
 
 int main(){
+  char command[MAX_LEN_LINE];
+  char *args[] = {command, NULL};
+  
+  while (true) {
+    char *s;
+    int len;
+    printf("================================= My Shell is ON =================================");
+    s = fgets(command, MAX_LEN_LINE, stdin);
+    if (s == NULL){
+      fprintf(stderr, "Running...\n");
+      exit(1);
+    }
+      
+    len = strlen(command);
+    printf("%d\n", len);
+    if(command[len - 1] == '\n'){
+      command[len - 1] = '\0'; 
+    } 
 
+    /* 1. exit 입력시 shell 종료 */
+    if((!strcmp("exit",command)) && (StepNo.data == 120)){
+      printf("exit!");
+      return 0;
+    }
+    printf("[%s]\n", command);
+  }
+  return 0;
 }
