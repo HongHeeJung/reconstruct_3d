@@ -8,12 +8,8 @@ stepper motor control - publish direction version
     2020.07.31 Publish direction node to control the Start point
     2020.08.01 Add delay microseconds before runnung the motor
     2020.08.24 Faster version
-<<<<<<< Updated upstream
-    2020.08.25 Add command for exit when revolution is up to 180 deg.
-=======
     2020.08.25 Add command for exit when revolution is up to 180 deg. - X
     2020.08.25 Add one_revolution variable to control motor position.
->>>>>>> Stashed changes
 */
 
 #include <ros.h>
@@ -32,12 +28,8 @@ const int enPin = 4;   // Enable 1 or connection X: WORK, 0 or GND: OFF
 const int STEPS_PER_REV = 800; // Motor steps per rotation (1.5 degree per step)
 const int stepDelayMicros = 3500;
 int direction_controller = -1;
-<<<<<<< Updated upstream
-int s = 0;
-=======
 int s = 0; // Global variable of start.data
 int one_revolution = 1; // Alert motor revolve 180 degree.
->>>>>>> Stashed changes
 
 void startCallback(const std_msgs::Int16& start);
 
@@ -67,21 +59,13 @@ void setup() {
 
 void startCallback(const std_msgs::Int16& start){
   s = start.data;
-<<<<<<< Updated upstream
-  if(start.data == 0){
-=======
   if((start.data == 0) && (one_revolution == 1)){
->>>>>>> Stashed changes
     digitalWrite(enPin,LOW);
     Serial.print("========== WAITTING... ==========");
   } else {
     digitalWrite(enPin,HIGH);
     Serial.print("========== START! ==========");
-<<<<<<< Updated upstream
-  }  
-=======
   }
->>>>>>> Stashed changes
 }
 
 void loop() {
@@ -94,20 +78,14 @@ void loop() {
   }
   
   //revolve 180 deg.
-<<<<<<< Updated upstream
-=======
   one_revolution = 0;
->>>>>>> Stashed changes
   for(int x = 0; x < STEPS_PER_REV; x++) {
     digitalWrite(stepPin,HIGH);
     delayMicroseconds(stepDelayMicros); 
     digitalWrite(stepPin,LOW); 
     delayMicroseconds(stepDelayMicros);
   }
-<<<<<<< Updated upstream
-=======
   one_revolution = 1;
->>>>>>> Stashed changes
   direction_controller = (direction_controller+1)%2;
 }
 /*
