@@ -25,6 +25,7 @@ if [ "$?" != "0" ]; then
     popd
 	exit 1
 fi
+# Wait until real-sense node is on.
 sleep 3
 
 gnome-terminal -- roslaunch loam_rotating_2d ALL.launch
