@@ -15,6 +15,11 @@ source ./devel/setup.bash
 ```
   
 ```
+sudo chmod 666 /dev/ttyUSB0  
+sudo chmod 666 /dev/ttyUSB1  
+```
+
+```
 #Arduino  
 rosrun rosserial_python serial_node.py /dev/ttyUSB1  
 ```
